@@ -43,7 +43,7 @@ pipeline {
         
         stage("deploy to docker") {
             steps {
-                sh "docker run -itd -p 8093:80 630303339910.dkr.ecr.us-east-1.amazonaws.com/k8s_deployment"
+                sh "docker run -itd -p 8095:80 630303339910.dkr.ecr.us-east-1.amazonaws.com/k8s_deployment"
                }
         }
     }
