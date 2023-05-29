@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        registry = "630303339910.dkr.ecr.us-east-1.amazonaws.com/k8s_deployment"
+        registry = "630303339910.dkr.ecr.ap-south-1.amazonaws.com/eks-deployment"
     }
     
     stages {
@@ -15,7 +15,6 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/TrivikrammKY/springboot-app.git']])
             }
         }
-        
         stage("Build Jar") {
             steps {
                 sh "mvn clean install"
@@ -32,19 +31,21 @@ pipeline {
         
         stage("ECR Login") {
             steps {
-                sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 630303339910.dkr.ecr.us-east-1.amazonaws.com"
+                sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 630303339910.dkr.ecr.ap-south-1.amazonaws.com"
             }
         } 
         stage("push into ECR") {
             steps {
-                sh "docker push 630303339910.dkr.ecr.us-east-1.amazonaws.com/k8s_deployment:latest"
+                sh "docker push 630303339910.dkr.ecr.ap-south-1.amazonaws.com/eks-deployment:latest"
             }
         }
         
-        stage("deploy to EC2") {
+        stage("deploy to k8's") {
             steps {
-                sh "docker run -itd -p 8096:80 630303339910.dkr.ecr.us-east-1.amazonaws.com/k8s_deployment"
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'ekskubeconfig', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                sh "kubectl apply -f eks-deploy-k8s.yaml"
                }
+            }
         }
-    }
+    }        
 }    
