@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MyAwesomeSpringBootAngularJsApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(MyAwesomeSpringBootAngularJsApp.class, args);
+        SpringApplication.run(SudheerSpringBootAngularJsApp.class, args);
     }
 }
